@@ -1,12 +1,17 @@
+// Dont forget to add logger in the end
+
 import express from 'express'
 import { apiResponse } from './utils/ApiResponse'
 import 'dotenv/config'
+import cookieParser from 'cookie-parser'
 
 const PORT= process.env.PORT || 3000
 const app= express()
 
-// abhi yha pe middlewares lagana h
-// and apiError design krna h
+app.use(cookieParser())
+app.use(express.json())
+app.use(express.urlencoded({ extended: true }))
+
 
 app.get("/", (req, res) => {
     return res.status(200)

@@ -3,6 +3,6 @@ export class apiResponse {
         this.status= statusCode,
         this.data= data,        // 'this' add krne se yh class k parameter bnn gya
         this.message= message,
-        this.success= statusCode < 400
+        this.success= true
     }
 }

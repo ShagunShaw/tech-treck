@@ -1,0 +1,8 @@
+Q)   How do you bootstrap the first privileged user (i.e. the super-admin)?
+Ans) This is the classic industry problem and the solution is Super Admin is not registered through the app at all. We create the Super Admin directly in the database — manually, one time, before the app goes live. A seed script basically. Steps are: Takes the super admin's email + password --> Hashes the password (Imp) --> Inserts directly into the users table with role = "super_admin"
+
+
+# new things learned: zod
+# new things to learned: ORM (drizzle or prisma), kafka, redis
+
+# things to implement: google oauth and some manually filled details for registering and only google oauth for login
