@@ -1,1 +1,0 @@
-// Name, email, phone (from google), College name, department, year, id, createdAt

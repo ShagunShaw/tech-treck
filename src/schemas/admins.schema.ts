@@ -1,1 +1,0 @@
-// name, email, phone (from google), role, isApproved (true for both admin and super-admin, false if super-admin did not permitted him), createdAt, id
