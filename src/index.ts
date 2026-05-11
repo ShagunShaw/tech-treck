@@ -4,6 +4,8 @@ import express from 'express'
 import { apiResponse } from './utils/ApiResponse'
 import 'dotenv/config'
 import cookieParser from 'cookie-parser'
+// no need to connect our db here, its already connected, so now just use it in any file you want
+import UserRouter from "./routes/user.router"
 
 const PORT= process.env.PORT || 3000
 const app= express()
@@ -11,6 +13,8 @@ const app= express()
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+app.use("/", UserRouter)
 
 
 app.get("/", (req, res) => {

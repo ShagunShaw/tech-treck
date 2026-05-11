@@ -1,4 +1,4 @@
-import { pgTable, serial, varchar, boolean, numeric, pgEnum, timestamp } from "drizzle-orm/pg-core"
+import { pgTable, serial, varchar, boolean, numeric, pgEnum, timestamp, jsonb } from "drizzle-orm/pg-core"
 
 export const roleEnum= pgEnum('role', ['admin', 'superAdmin'])
 export const yearEnum= pgEnum('year', ['1st', '2nd', '3rd', '4th', '5th'])
@@ -13,6 +13,7 @@ export const Participant = pgTable('participant', {
     college: varchar({length: 100}),
     department: varchar({length: 50}),
     year: yearEnum(),
+    refreshTokens: jsonb().$type<{sessionId: string, token: string}[]>().default([]),
     created_at: timestamp().defaultNow()
 })
 
@@ -24,6 +25,7 @@ export const Admin = pgTable('admin', {
     phone: varchar({length: 10}),
     role: roleEnum().notNull(),
     isApproved: boolean().default(false),
+    refreshTokens: jsonb().$type<{sessionId: string, token: string}[]>().default([]),
     created_at: timestamp().defaultNow()
 })
 
