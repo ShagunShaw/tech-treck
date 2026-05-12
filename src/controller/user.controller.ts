@@ -1,46 +1,152 @@
 import type { Request, Response } from 'express'
+import * as userService from '../service/user.service'
+import { apiError } from '../utils/ApiError'
+import { apiResponse } from '../utils/ApiResponse'
 
-yh pura kaun karega?
-export const googleParticipantRedirect= (req: Request, res: Response) => {
+google console mei jaake last mei select kro, what all info you want from person google account like email, username, and googleId
+
+export const googleParticipantRedirect = (req: Request, res: Response) => {
+    const redirectUri = 'http://localhost:3000/api/v1/auth/google/register/callback';
+    const url = userService.googleRedirect(redirectUri)
+
+    return res.redirect(url);
+}
+
+export const googleParticipantCallback = async (req: Request, res: Response) => {
+    try {
+        const redirectUri = 'http://localhost:3000/api/v1/auth/google/register/callback';
+        const code = req.query.code;
+        if (!code) return res.status(400).json(new apiError(400, "Bad Request", "No code recieved from this google account"))
+
+        const token = await userService.googleRegisterCallback(code, redirectUri, 'participant')
+
+        return res.cookie('googleTempData', token, { httpOnly: true, secure: true })
+            .redirect('http://localhost:5500/registerPage2.html')
+    } catch (error: any) {
+        const status = error.status ?? 500
+        return res.status(status).json(
+            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
+        )
+    }
+}
+
+export const partcipantRegister = async (req: Request, res: Response) => {
+    try {
+        const { phone, college, department, year } = req.body
+
+        const token = req.cookies?.googleTempData
+        if (!token) return res.status(500).json(new apiError(500, "Token Not Found", "googleTempData token not found"))
+
+        const data = await userService.register(token, phone, college, department, year)
+
+        After displaying the success message, navigate participant to the home page only, no login after registartion
+        return res.status(201)
+                  .clearCookie('googleTempData')
+                  .json(new apiResponse(201, data, "Participant registered successfully"))
+    } catch (error: any) {
+        const status = error.status ?? 500
+        return res.status(status).json(
+            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
+        )
+    }
+}
+
+export const googleAdminRedirect = (req: Request, res: Response) => {
 
 }
 
-export const googleParticipantCallback= (req: Request, res: Response) => {
+export const googleAdminCallback = (req: Request, res: Response) => {
 
 }
 
-export const googleAdminRedirect= (req: Request, res: Response) => {
-
+export const adminRegister = (req: Request, res: Response) => {
+    
 }
 
-export const googleAdminCallback= (req: Request, res: Response) => {
+export const googleParticipantLoginRedirect = (req: Request, res: Response) => {
+    const redirectUri = 'http://localhost:3000/api/v1/auth/google/login/callback';
+    const url = userService.googleRedirect(redirectUri)
 
+    return res.redirect(url);
 }
 
-export const googleParticipantLoginRedirect= (req: Request, res: Response) => {
+export const googleParticipantLoginCallback = (req: Request, res: Response) => {
+    try {
+        const redirectUri = 'http://localhost:3000/api/v1/auth/google/login/callback';
+        const code = req.query.code;
+        if (!code) return res.status(400).json(new apiError(400, "Bad Request", "No code recieved from this google account"))
 
+        const { accessToken, refreshToken, updatedData } = await userService.googleLoginCallback(code, redirectUri, 'participant')
+
+        return res.status(200)
+                  .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
+                  .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
+                  .json(new apiResponse(200, updatedData, "User logged in successfully"))
+            
+    } catch (error: any) {
+        const status = error.status ?? 500
+        return res.status(status).json(
+            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
+        )
+    }
 }
 
-export const googleParticipantLoginCallback= (req: Request, res: Response) => {
+export const googleAdminLoginRedirect = (req: Request, res: Response) => {
+    const redirectUri = 'http://localhost:3000/api/v1/auth/google/admin/login/callback';
+    const url = userService.googleRedirect(redirectUri)
 
+    return res.redirect(url);
 }
 
-export const googleAdminLoginRedirect= (req: Request, res: Response) => {
+export const googleAdminLoginCallback = (req: Request, res: Response) => {
+    try {
+        const redirectUri = 'http://localhost:3000/api/v1/auth/google/admin/login/callback';
+        const code = req.query.code;
+        if (!code) return res.status(400).json(new apiError(400, "Bad Request", "No code recieved from this google account"))
 
+        const { accessToken, refreshToken, updatedData } = await userService.googleLoginCallback(code, redirectUri, 'admin')
+
+        return res.status(200)
+                  .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
+                  .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
+                  .json(new apiResponse(200, updatedData, "Admin logged in successfully"))
+            
+    } catch (error: any) {
+        const status = error.status ?? 500
+        return res.status(status).json(
+            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
+        )
+    }
 }
 
-export const googleSuperadminLoginRedirect= (req: Request, res: Response) => {
+export const googleSuperadminLoginRedirect = (req: Request, res: Response) => {
+    const redirectUri = 'http://localhost:3000/api/v1/auth/google/superAdmin/login/callback';
+    const url = userService.googleRedirect(redirectUri)
 
+    return res.redirect(url);
 }
 
-export const googleAdminLoginCallback= (req: Request, res: Response) => {
+export const googleSuperadminLoginCallback = (req: Request, res: Response) => {
+    try {
+        const redirectUri = 'http://localhost:3000/api/v1/auth/google/superAdmin/login/callback';
+        const code = req.query.code;
+        if (!code) return res.status(400).json(new apiError(400, "Bad Request", "No code recieved from this google account"))
 
+        const { accessToken, refreshToken, updatedData } = await userService.googleLoginCallback(code, redirectUri, 'super-admin')
+
+        return res.status(200)
+                  .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
+                  .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
+                  .json(new apiResponse(200, updatedData, "Super-Admin logged in successfully"))
+            
+    } catch (error: any) {
+        const status = error.status ?? 500
+        return res.status(status).json(
+            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
+        )
+    }
 }
 
-export const googleSuperadminLoginCallback= (req: Request, res: Response) => {
-
-}
-
-export const logoutUser= (req: Request, res: Response) => {
+export const logoutUser = (req: Request, res: Response) => {
 
 }

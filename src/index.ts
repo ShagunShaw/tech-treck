@@ -14,7 +14,7 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use("/", UserRouter)
+app.use("/api/v1/", UserRouter)
 
 
 app.get("/", (req, res) => {
