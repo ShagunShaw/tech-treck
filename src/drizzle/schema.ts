@@ -2,6 +2,7 @@ import { pgTable, serial, varchar, boolean, numeric, pgEnum, timestamp, jsonb } 
 
 export const roleEnum= pgEnum('role', ['admin', 'superAdmin'])
 export const yearEnum= pgEnum('year', ['1st', '2nd', '3rd', '4th', '5th'])
+export const statusEnum= pgEnum('status', ['pending', 'approved', 'rejected'])
 
 
 export const Participant = pgTable('participant', {
@@ -24,7 +25,8 @@ export const Admin = pgTable('admin', {
     googleId: varchar({length: 21}).unique().notNull(),
     phone: varchar({length: 10}),
     role: roleEnum().notNull(),
-    isApproved: boolean().default(false),
+    description: varchar({length: 300}).notNull(),
+    status: statusEnum().default('pending'),
     refreshTokens: jsonb().$type<{sessionId: string, token: string}[]>().default([]),
     created_at: timestamp().defaultNow()
 })

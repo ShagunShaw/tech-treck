@@ -6,6 +6,7 @@ import 'dotenv/config'
 import cookieParser from 'cookie-parser'
 // no need to connect our db here, its already connected, so now just use it in any file you want
 import UserRouter from "./routes/user.router"
+import SuperAdminRouter from "./routes/super-admin.routes"
 
 const PORT= process.env.PORT || 3000
 const app= express()
@@ -14,7 +15,8 @@ app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use("/api/v1/", UserRouter)
+app.use("/api/v1", UserRouter)
+app.use("/api/v1/super-admin", SuperAdminRouter)
 
 
 app.get("/", (req, res) => {

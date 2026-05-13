@@ -33,9 +33,7 @@ router.get('/auth/google/superAdmin/login', user.googleSuperadminLoginRedirect);
 
 router.get('/auth/google/superAdmin/login/callback', user.googleSuperadminLoginCallback)
 
-router.post("/logout", verifyJWT, user.logoutUser)     // partcipants logout
-
-router.post("/admin/logout", verifyJWT, user.logoutUser)        
+router.post("/logout", verifyJWT, user.logoutUser)     // logout for every role
 
 
 export default router;

@@ -18,8 +18,8 @@ if (!ACCESS_TOKEN_SECRET || !ACCESS_TOKEN_EXPIRY || !REFRESH_TOKEN_SECRET || !RE
     throw new Error("One of the access token secret/expiry or refresh token secret/expiry is missing")
 
 
-export const generateAccessToken = (id: number, email: string, role: 'participant' | 'admin' | 'super-admin') => {
-    const payload = { id, email, role }
+export const generateAccessToken = (id: number, sessionId: string, role: 'participant' | 'admin' | 'super-admin') => {
+    const payload = { id, sessionId, role }
     return jwt.sign(payload, ACCESS_TOKEN_SECRET, {
         expiresIn: ACCESS_TOKEN_EXPIRY as JwtExpiry,
         algorithm: 'HS256'
@@ -54,7 +54,7 @@ export const verifyJWT = (req: any, res: Response, next: NextFunction) => {
     }
 }
 
-export const verifyRefreshToken = async (req: any, res: Response, next: NextFunction) => {
+const verifyRefreshToken = async (req: any, res: Response, next: NextFunction) => {
     const token = req.cookies?.refreshToken
 
     if (!token) {
@@ -81,6 +81,7 @@ export const verifyRefreshToken = async (req: any, res: Response, next: NextFunc
 
             if (!data) return res.status(404).json(new apiError(404, "User not found", "User with this id not found"))
 
+            // Verifying by sessionId is generally considered better for modern apps, rather than verifying by the token value itself
             const validSession = data.refreshTokens?.find(rt => rt.sessionId === decoded.sessionId)
 
             if (!validSession) res.status(401).json(new apiError(401, "Session Revoked", "Session revoked, please login again"))

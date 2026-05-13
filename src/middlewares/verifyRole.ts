@@ -2,7 +2,7 @@ import type { NextFunction, Request, Response } from "express"
 import { apiError } from "../utils/ApiError"
 
 // Handling Role-Based Access Control
-const authorize = (...roles: []) => {
+export const authorize = (...roles: string[]) => {
     return (req: any, res: Response, next: NextFunction) => {
         try {
             const role = req.user.role

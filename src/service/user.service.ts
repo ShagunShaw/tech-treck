@@ -5,6 +5,7 @@ import { db } from '../drizzle/db'
 import { Participant, Admin } from '../drizzle/schema'
 import { eq } from 'drizzle-orm'
 import { generateAccessToken, generateRefreshToken } from '../middlewares/verifyJWT'
+import { randomUUID } from 'crypto'
 
 
 type JwtExpiry = `${number}m`
@@ -96,6 +97,31 @@ export const register = async (token: string, phone: string, college: string, de
     }
 }
 
+export const registerAdmin = async (token: string, phone: string, description: string) => {
+    try {
+        if (!process.env.GOOGLE_TOKEN_SECRET) throw new apiError(500, "Secret Key Not Found", "Google token secret key not found")
+
+        const payload = jwt.verify(token, process.env.GOOGLE_TOKEN_SECRET) as JwtPayload
+        if (!payload) throw new apiError(500, "Payload Not Found", "Payload not found from google token")
+
+        const data = await db.insert(Admin)
+            .values({
+                name: payload.name,
+                email: payload.email,
+                googleId: payload.googleId,
+                phone,
+                role: 'admin',
+                description
+            });
+
+        dont forget to add our 'super-admin' directly in our database
+
+        return data
+    } catch (error: any) {
+        throw new apiError(500, error.name, error.message)
+    }
+}
+
 export const googleLoginCallback = async (code: any, redirectUri: string, role: 'participant' | 'admin' | 'super-admin') => {
     try {
         const tokenRes = await axios.post('https://oauth2.googleapis.com/token', {
@@ -140,9 +166,9 @@ export const googleLoginCallback = async (code: any, redirectUri: string, role: 
             if (!data) throw new apiError(400, "User did not exists", "Admin with this email is not registered")
         }
 
-        const sessionId = (Date.now() + Math.random()).toString();
+        const sessionId = randomUUID();
 
-        const accessToken = generateAccessToken(data.id, data.email, role)
+        const accessToken = generateAccessToken(data.id, sessionId, role)
         const refreshToken = generateRefreshToken(data.id, role, sessionId)
 
         // Add this new session in our db
@@ -150,18 +176,67 @@ export const googleLoginCallback = async (code: any, redirectUri: string, role: 
         const newTokens = [...existingTokens, { sessionId, token: refreshToken }]
 
         let updatedData;
-        if(role === 'participant') {
-            updatedData= await db.update(Participant)
-            .set({ refreshTokens: newTokens })
-            .where(eq(Participant.id, data.id))
+        if (role === 'participant') {
+            updatedData = await db.update(Participant)
+                .set({ refreshTokens: newTokens })
+                .where(eq(Participant.id, data.id))
         } else {
-            updatedData= await db.update(Admin)
-            .set({ refreshTokens: newTokens })
-            .where(eq(Admin.id, data.id))
+            updatedData = await db.update(Admin)
+                .set({ refreshTokens: newTokens })
+                .where(eq(Admin.id, data.id))
         }
 
         return { accessToken, refreshToken, updatedData }
-        
+
+    } catch (error: any) {
+        throw new apiError(500, error.name, error.message)
+    }
+}
+
+export const logout = async (user: {
+    id: number,
+    sessionId: string,
+    role: 'participant' | 'admin' | 'super-admin'
+}) => {
+    try {
+
+        let data;
+        if (user.role == 'participant') {
+            data = await db.query.Participant.findFirst({
+                where: eq(Participant.id, user.id),
+                columns: {
+                    refreshTokens: true
+                }
+            })
+
+            if (!data) throw new apiError(404, "User not found", "User of this id not found")
+        } else {
+            data = await db.query.Admin.findFirst({
+                where: eq(Admin.id, user.id),
+                columns: {
+                    refreshTokens: true
+                }
+            })
+
+            if (!data) throw new apiError(404, "User not found", "User of this id not found")
+        }
+
+        const existingTokens = data.refreshTokens
+        if (!existingTokens) throw new apiError(404, "Refresh Token Not Found", "Refresh Token for this session not found")
+
+        const newTokens = existingTokens.filter((val) => val.sessionId !== user.sessionId)
+
+        if (user.role === 'participant') {
+            await db.update(Participant)
+                .set({ refreshTokens: newTokens })
+                .where(eq(Participant.id, user.id))
+        } else {
+            await db.update(Admin)
+                .set({ refreshTokens: newTokens })
+                .where(eq(Admin.id, user.id))
+        }
+
+        return;
     } catch (error: any) {
         throw new apiError(500, error.name, error.message)
     }

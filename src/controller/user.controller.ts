@@ -41,8 +41,8 @@ export const partcipantRegister = async (req: Request, res: Response) => {
 
         After displaying the success message, navigate participant to the home page only, no login after registartion
         return res.status(201)
-                  .clearCookie('googleTempData')
-                  .json(new apiResponse(201, data, "Participant registered successfully"))
+            .clearCookie('googleTempData')
+            .json(new apiResponse(201, data, "Participant registered successfully"))
     } catch (error: any) {
         const status = error.status ?? 500
         return res.status(status).json(
@@ -52,15 +52,50 @@ export const partcipantRegister = async (req: Request, res: Response) => {
 }
 
 export const googleAdminRedirect = (req: Request, res: Response) => {
+    const redirectUri = 'http://localhost:3000/api/v1/auth/google/admin/register/callback';
+    const url = userService.googleRedirect(redirectUri)
 
+    return res.redirect(url);
 }
 
-export const googleAdminCallback = (req: Request, res: Response) => {
+export const googleAdminCallback = async (req: Request, res: Response) => {
+    try {
+        const redirectUri = 'http://localhost:3000/api/v1/auth/google/admin/register/callback';
+        const code = req.query.code;
+        if (!code) return res.status(400).json(new apiError(400, "Bad Request", "No code recieved from this google account"))
 
+        const token = await userService.googleRegisterCallback(code, redirectUri, 'admin')
+
+        return res.cookie('googleTempData', token, { httpOnly: true, secure: true })
+            .redirect('http://localhost:5500/adminRegisterPage2.html')
+    } catch (error: any) {
+        const status = error.status ?? 500
+        return res.status(status).json(
+            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
+        )
+    }
 }
 
-export const adminRegister = (req: Request, res: Response) => {
-    
+export const adminRegister = async (req: Request, res: Response) => {
+    try {
+        const { phone, description } = req.body
+
+        const token = req.cookies?.googleTempData
+        if (!token) return res.status(500).json(new apiError(500, "Token Not Found", "googleTempData token not found"))
+
+        const data = await userService.registerAdmin(token, phone, description)
+
+        After displaying the success message(along with the message "waiting for super-admin to approve your request"), navigate admin to the home page only, no login after registartion
+
+        return res.status(201)
+            .clearCookie('googleTempData')
+            .json(new apiResponse(201, data, "Admin registered successfully"))
+    } catch (error: any) {
+        const status = error.status ?? 500
+        return res.status(status).json(
+            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
+        )
+    }
 }
 
 export const googleParticipantLoginRedirect = (req: Request, res: Response) => {
@@ -70,7 +105,7 @@ export const googleParticipantLoginRedirect = (req: Request, res: Response) => {
     return res.redirect(url);
 }
 
-export const googleParticipantLoginCallback = (req: Request, res: Response) => {
+export const googleParticipantLoginCallback = async (req: Request, res: Response) => {
     try {
         const redirectUri = 'http://localhost:3000/api/v1/auth/google/login/callback';
         const code = req.query.code;
@@ -79,10 +114,10 @@ export const googleParticipantLoginCallback = (req: Request, res: Response) => {
         const { accessToken, refreshToken, updatedData } = await userService.googleLoginCallback(code, redirectUri, 'participant')
 
         return res.status(200)
-                  .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
-                  .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
-                  .json(new apiResponse(200, updatedData, "User logged in successfully"))
-            
+            .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
+            .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
+            .json(new apiResponse(200, updatedData, "User logged in successfully"))
+
     } catch (error: any) {
         const status = error.status ?? 500
         return res.status(status).json(
@@ -98,7 +133,7 @@ export const googleAdminLoginRedirect = (req: Request, res: Response) => {
     return res.redirect(url);
 }
 
-export const googleAdminLoginCallback = (req: Request, res: Response) => {
+export const googleAdminLoginCallback = async (req: Request, res: Response) => {
     try {
         const redirectUri = 'http://localhost:3000/api/v1/auth/google/admin/login/callback';
         const code = req.query.code;
@@ -107,10 +142,10 @@ export const googleAdminLoginCallback = (req: Request, res: Response) => {
         const { accessToken, refreshToken, updatedData } = await userService.googleLoginCallback(code, redirectUri, 'admin')
 
         return res.status(200)
-                  .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
-                  .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
-                  .json(new apiResponse(200, updatedData, "Admin logged in successfully"))
-            
+            .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
+            .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
+            .json(new apiResponse(200, updatedData, "Admin logged in successfully"))
+
     } catch (error: any) {
         const status = error.status ?? 500
         return res.status(status).json(
@@ -126,7 +161,7 @@ export const googleSuperadminLoginRedirect = (req: Request, res: Response) => {
     return res.redirect(url);
 }
 
-export const googleSuperadminLoginCallback = (req: Request, res: Response) => {
+export const googleSuperadminLoginCallback = async (req: Request, res: Response) => {
     try {
         const redirectUri = 'http://localhost:3000/api/v1/auth/google/superAdmin/login/callback';
         const code = req.query.code;
@@ -135,10 +170,10 @@ export const googleSuperadminLoginCallback = (req: Request, res: Response) => {
         const { accessToken, refreshToken, updatedData } = await userService.googleLoginCallback(code, redirectUri, 'super-admin')
 
         return res.status(200)
-                  .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
-                  .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
-                  .json(new apiResponse(200, updatedData, "Super-Admin logged in successfully"))
-            
+            .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
+            .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })
+            .json(new apiResponse(200, updatedData, "Super-Admin logged in successfully"))
+
     } catch (error: any) {
         const status = error.status ?? 500
         return res.status(status).json(
@@ -147,6 +182,20 @@ export const googleSuperadminLoginCallback = (req: Request, res: Response) => {
     }
 }
 
-export const logoutUser = (req: Request, res: Response) => {
+export const logoutUser = async (req: any, res: Response) => {
+    try {
+        const user = req.user
 
+        await userService.logout(user)
+
+        return res.status(200)
+                  .clearCookie('accessToken')
+                  .clearCookie('refreshToken')
+                  .json(new apiResponse(200, [], "User logged out successfully"))
+    } catch (error: any) {
+        const status = error.status ?? 500
+        return res.status(status).json(
+            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
+        )
+    }
 }

@@ -5,3 +5,5 @@ export const tokenUser = z.object({
     email: z.email(),
     role: z.enum(["participant", "admin", "super-admin"])
 })
+
+export const statusSchema = z.enum(['approved', 'rejected'])
