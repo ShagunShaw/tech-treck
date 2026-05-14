@@ -15,6 +15,13 @@
       "when": 1778496093827,
       "tag": "0001_adorable_meteorite",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1778702325362,
+      "tag": "0002_mixed_deadpool",
+      "breakpoints": true
     }
   ]
 }

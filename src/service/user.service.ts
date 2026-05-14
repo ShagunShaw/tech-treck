@@ -87,7 +87,8 @@ export const register = async (token: string, phone: string, college: string, de
                 college,
                 department,
                 year
-            });
+            })
+            .returning({ id: Participant.id, name: Participant.name, email: Participant.email, college: Participant.college, department: Participant.department, year: Participant.year });
 
         dont forget to send 'success email' via 'kafka'
 
@@ -112,7 +113,8 @@ export const registerAdmin = async (token: string, phone: string, description: s
                 phone,
                 role: 'admin',
                 description
-            });
+            })
+            .returning({ id: Admin.id, name: Admin.name, email: Admin.email, description: Admin.description });
 
         dont forget to add our 'super-admin' directly in our database
 

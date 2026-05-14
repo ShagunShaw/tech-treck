@@ -16,7 +16,7 @@ export const getAdmins = async (status: 'approved' | 'pending') => {
             }
         })
 
-        return admins ?? [];
+        return admins;
     } catch (error: any) {
         throw new apiError(500, error.name, error.message)
     }
@@ -24,11 +24,12 @@ export const getAdmins = async (status: 'approved' | 'pending') => {
 
 export const manageApprovalService = async (adminId: number, status: 'approved' | 'rejected') => {
     try {
-        if(!adminId)  throw new apiError(500, "Admin Id missing", "Admin id not found in service parameter")
-
         const data= await db.update(Admin)
             .set({ status: ((status === 'approved')?'approved':'rejected') })
-            .where(eq(Admin.id, adminId));
+            .where(eq(Admin.id, adminId))
+            .returning({ id: Admin.id })
+
+        if(data.length === 0)   throw new apiError(404, "Entry not found", "No such entry with this admin id found")
 
         Send an email to the admin about their acception/rejection via Kafka's email service
 
@@ -39,5 +40,17 @@ export const manageApprovalService = async (adminId: number, status: 'approved' 
 }
 
 export const deleteAdminService = async (adminId: number) => {
-    isko kor
+    try {
+        const data= await db.delete(Admin)
+                            .where(eq(Admin.id, adminId))
+                            .returning({ id: Admin.id })
+
+        if(data.length === 0)   throw new apiError(404, "Entry not found", "No such entry with this admin id found")
+
+        Send an email to the admin about them being removed via Kafka's email service
+
+        return data;
+    } catch (error: any) {
+        throw new apiError(500, error.name, error.message)
+    }
 }

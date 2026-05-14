@@ -5,5 +5,8 @@ Q)   Why not take 'googleId' as primary key instead of 'id' ?
 Ans) Due to Performance: 'id' is a serial integer — small, fast to index and join on. 'googleId' is a 21 character string — slower for joins, especially when your group_members table references it as foreign key.
 
 
+*  If you need to check whether rows were affected after insert, update or delete, always use  .returning()
+*  Searching an indexed column across many rows is faster than scanning an array in one row. This is literally why relational databases were invented. Indexes on foreign keys are one of PostgreSQL's core strengths.  And that is the reason why we chose group_id as foreign key in my group_members table instead of an array of group_members_id in our groups table. With group_id in members table — PostgreSQL puts an index on that foreign key. Finding all members of a group is an instant indexed lookup.
+
 # new things learned: zod
 # new things to learned: ORM (drizzle or prisma), kafka, redis

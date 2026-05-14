@@ -11,6 +11,10 @@ import SuperAdminRouter from "./routes/super-admin.routes"
 const PORT= process.env.PORT || 3000
 const app= express()
 
+add the field of 'updatedAt' also in each table, and see how it can be managed so that every time an update is done, 'updatedAt' field gets updated automatically (without needing to update it manually)
+
+dont forget to add the super-admin record directly in our db, with status= 'approved'
+
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))

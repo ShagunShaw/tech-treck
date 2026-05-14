@@ -11,7 +11,6 @@ router.patch("/:adminId/manage", verifyJWT, authorize('super-admin'), superAdmin
 
 router.get("/admins", verifyJWT, authorize('super-admin', 'admin'), superAdminController.getApprovedAdmins)       // list of all approved admins
 
-remove admins
 router.delete("/admin/:adminId", verifyJWT, authorize("super-admin"), superAdminController.deleteAdmin)
 
 // create groups when game starts (to be handled in detail)

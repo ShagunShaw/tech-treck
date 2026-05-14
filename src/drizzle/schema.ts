@@ -1,8 +1,10 @@
-import { pgTable, serial, varchar, boolean, numeric, pgEnum, timestamp, jsonb } from "drizzle-orm/pg-core"
+import { pgTable, serial, varchar, pgEnum, timestamp, jsonb, smallint } from "drizzle-orm/pg-core"
 
 export const roleEnum= pgEnum('role', ['admin', 'superAdmin'])
 export const yearEnum= pgEnum('year', ['1st', '2nd', '3rd', '4th', '5th'])
 export const statusEnum= pgEnum('status', ['pending', 'approved', 'rejected'])
+export const groupStatusEnum= pgEnum('groupStatus', ['active', 'disqualified', 'aborted'])
+export const genreEnum= pgEnum('genre', ['Fire', 'Ice', 'Water', 'Air'])
 
 
 export const Participant = pgTable('participant', {
@@ -31,13 +33,20 @@ export const Admin = pgTable('admin', {
     created_at: timestamp().defaultNow()
 })
 
-// export const Group = pgTable('group', {
-    
-// })
+export const Group = pgTable('group', {
+    id: serial().primaryKey(),
+    name: varchar({length: 50}).notNull(),
+    status: groupStatusEnum(),
+    points: smallint().default(),       
+    createdAt: timestamp().defaultNow()
+})
 
-// export const GroupMember = pgTable('group_member', {
-
-// })
+export const GroupMember = pgTable('group_member', {
+    id: serial().primaryKey(),
+    participantId: smallint().notNull().references(() => Participant.id, { onDelete: 'restrict' }),        // even admins can play can the game, but for that they had to first register, they cannot play directly from being the admin, but they can use the same email for register, the only main thing is to 'register'
+    genre: genreEnum(),
+    group: smallint().notNull().references(() => Group.id, { onDelete: 'cascade' })
+})
 
 
 

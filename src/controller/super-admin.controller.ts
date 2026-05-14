@@ -22,8 +22,8 @@ export const manageApproval = async (req: Request, res: Response) => {
         const { adminId } = req.params
         if (!adminId) return res.status(400).json(new apiError(400, "Admin Id missing", "Admin id is missing in params"))
 
-        const { status }= req.body
-        if(!status || !statusSchema.safeParse(status).success)   return res.status(400).json(new apiError(400, "Error with status field", "status field is either missing or is not in the required format"))
+        const { status } = req.body
+        if (!status || !statusSchema.safeParse(status).success) return res.status(400).json(new apiError(400, "Error with status field", "status field is either missing or is not in the required format"))
 
         const data = await superAdminService.manageApprovalService(parseInt(adminId as string), status)
 
@@ -50,7 +50,18 @@ export const getApprovedAdmins = async (req: Request, res: Response) => {
 }
 
 export const deleteAdmin = async (req: Request, res: Response) => {
-    const { adminId } = req.params
+    try {
+        const { adminId } = req.params
 
-    aage kro
+        if (!adminId) return res.status(400).json(new apiError(400, "Admin Id missing", "Admin id not found in params"))
+
+        const data = superAdminService.deleteAdminService(parseInt(adminId as string))
+
+        return res.status(200).json(new apiResponse(200, data, "Admin deleted successfully"))
+    } catch (error: any) {
+        const staus = error.status ?? 500
+        return res.status(staus).json(
+            new apiError(staus, error.errName ?? error.name, error.errMessage ?? error.message)
+        )
+    }
 }
