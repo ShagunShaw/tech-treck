@@ -1,10 +1,13 @@
-import { pgTable, serial, varchar, pgEnum, timestamp, jsonb, smallint } from "drizzle-orm/pg-core"
+import { pgTable, serial, varchar, pgEnum, timestamp, jsonb, smallint, boolean, numeric } from "drizzle-orm/pg-core"
 
 export const roleEnum= pgEnum('role', ['admin', 'superAdmin'])
 export const yearEnum= pgEnum('year', ['1st', '2nd', '3rd', '4th', '5th'])
 export const statusEnum= pgEnum('status', ['pending', 'approved', 'rejected'])
 export const groupStatusEnum= pgEnum('groupStatus', ['active', 'disqualified', 'aborted'])
 export const genreEnum= pgEnum('genre', ['Fire', 'Ice', 'Water', 'Air'])
+
+// pgEnum expects string values for enum members
+export const levelEnum= pgEnum('level', ['0', '1', '2', '3', '4'])
 
 
 export const Participant = pgTable('participant', {
@@ -37,8 +40,12 @@ export const Group = pgTable('group', {
     id: serial().primaryKey(),
     name: varchar({length: 50}).notNull(),
     status: groupStatusEnum(),
-    points: smallint().default(),       
-    createdAt: timestamp().defaultNow()
+    points: smallint().default(20),     
+    timeTaken: numeric({ precision: 5, scale: 2 }),          // in minutes
+    createdAt: timestamp().defaultNow(),
+    maxLevelReached: levelEnum().default('0'),
+
+    genreAssigned:       (Add this later)
 })
 
 export const GroupMember = pgTable('group_member', {
@@ -46,6 +53,14 @@ export const GroupMember = pgTable('group_member', {
     participantId: smallint().notNull().references(() => Participant.id, { onDelete: 'restrict' }),        // even admins can play can the game, but for that they had to first register, they cannot play directly from being the admin, but they can use the same email for register, the only main thing is to 'register'
     genre: genreEnum(),
     group: smallint().notNull().references(() => Group.id, { onDelete: 'cascade' })
+})
+
+// This table will have only one row, and its value will be created from the db itself, only the fileds will be updated from the backend services
+export const GameConfig = pgTable('game_config', {
+    id: serial().primaryKey(),
+    startTime: timestamp(),
+    isStarted: boolean().default(false),
+    duration: smallint().notNull()          // (in minutes)
 })
 
 
