@@ -1,5 +1,10 @@
 export class apiError {
-    constructor(statusCode: number, errName, errMessage) {
+    status: number;
+    errName: string;
+    errMessage: string;
+    success: boolean;
+
+    constructor(statusCode: number, errName: string, errMessage: string) {
         this.status= statusCode,
         this.errName = errName ?? "UNKNOWN_ERROR"           // err.name to be passes here
         this.errMessage = errMessage ?? "Internal Server Error",        // err.message to be passed here

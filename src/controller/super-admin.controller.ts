@@ -3,6 +3,7 @@ import { apiError } from "../utils/ApiError";
 import * as superAdminService from "../service/super-admin.service"
 import { apiResponse } from "../utils/ApiResponse";
 import { statusSchema } from "../validations/tokenUser.type"
+import { waitForDebugger } from "inspector";
 
 export const getPendingAdmins = async (req: Request, res: Response) => {
     try {
@@ -19,7 +20,9 @@ export const getPendingAdmins = async (req: Request, res: Response) => {
 
 export const manageApproval = async (req: Request, res: Response) => {
     try {
+        Wait, instead of approving each admin one by one, which would lead to multiple db calls, replace this now and use 'Batch Processing', to approve multiple admins at once.
         const { adminId } = req.params
+
         if (!adminId) return res.status(400).json(new apiError(400, "Admin Id missing", "Admin id is missing in params"))
 
         const { status } = req.body
@@ -51,6 +54,7 @@ export const getApprovedAdmins = async (req: Request, res: Response) => {
 
 export const deleteAdmin = async (req: Request, res: Response) => {
     try {
+        Instead of deleting each admin one by one, which would lead to multiple db calls, replace this now and use 'Batch Processing', to delete multiple admins at once.
         const { adminId } = req.params
 
         if (!adminId) return res.status(400).json(new apiError(400, "Admin Id missing", "Admin id not found in params"))

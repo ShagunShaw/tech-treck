@@ -1,4 +1,4 @@
-// Dont forget to add logger in the end
+Dont forget to add logger in the end
 
 import express from 'express'
 import { apiResponse } from './utils/ApiResponse'

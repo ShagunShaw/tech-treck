@@ -1,8 +1,13 @@
 export class apiResponse {
-    constructor(statusCode: number, data, message= "Success") {
-        this.status= statusCode,
-        this.data= data,        // 'this' add krne se yh class k parameter bnn gya
-        this.message= message,
-        this.success= true
+    status: number;
+    data: any;
+    message: string;
+    success: boolean;
+
+    constructor(statusCode: number, data: any, message = "Success") {
+        this.status = statusCode;
+        this.data = data;
+        this.message = message;
+        this.success = true;
     }
 }
