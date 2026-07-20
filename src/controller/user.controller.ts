@@ -113,6 +113,8 @@ export const googleParticipantLoginCallback = async (req: Request, res: Response
 
         const { accessToken, refreshToken, updatedData } = await userService.googleLoginCallback(code, redirectUri, 'participant')
 
+        Now the participant had logged in, we have to decide what contents we want to display them. If game has not setDefaultResultOrder, then display them only the static 'Rules Page', else display the contents of the game. 
+
         return res.status(200)
             .cookie('accessToken', accessToken, { httpOnly: true, secure: true })
             .cookie('refreshToken', refreshToken, { httpOnly: true, secure: true })

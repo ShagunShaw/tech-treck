@@ -1,3 +1,5 @@
+// participant genre register
+
 // create groups when game starts (to be handled in detail)
 
 // disqualify group from the game
