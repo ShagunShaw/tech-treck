@@ -1,0 +1,1 @@
+when the TTL for a creating a group has expired and all members are not added to it, then how will all the members (who has been added in the group till now) and the group lead will be notified about it in frontend and will be asked to create another group

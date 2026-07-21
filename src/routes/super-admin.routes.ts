@@ -13,6 +13,14 @@ router.get("/admins", verifyJWT, authorize('super-admin', 'admin'), superAdminCo
 
 router.delete("/admin/:adminId", verifyJWT, authorize("super-admin"), superAdminController.deleteAdmin)
 
+start the game
+
+finish the game (auto-finishes, but still handle it properly)
+
+allocate extra points to each team depending upon the level reached
+
+Add a feature to disqualify a group (If a group is disqualified, its records and its members records still remains in the Database, only the status is updated from 'active' to 'disqualified')
+
 Add a special case group (by super-admin only). Like when participant form group -> the group should have members of four unique genres. now there can be cases where there are 3, 2 or 5 members, in that case a special group is formed not by participant but by super-admin, where he can create group of any number of members, and give them their initial points accordingly
 
 
