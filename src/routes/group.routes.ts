@@ -12,7 +12,7 @@ router.post('/genre', verifyJWT, authorize('participant'), group.registerGenre)
 router.post('/', verifyJWT, authorize('participant'), group.createGroup)
 
 // abort the game
-router.patch('/abort', verifyJWT, authorize('participant'), group.abort)
+router.patch('/:groupId/abort', verifyJWT, authorize('participant'), group.abort)
 
 Scan QR and solve given question (can have two different routes or can be done in one route only, check accordingly)
 

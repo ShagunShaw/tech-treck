@@ -7,3 +7,5 @@ export const tokenUser = z.object({
 })
 
 export const statusSchema = z.enum(['approved', 'rejected'])
+
+export const genreSchema = z.enum(['Sky', 'Stars', 'Earth', 'Sun'])

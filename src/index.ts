@@ -1,21 +1,19 @@
 Dont forget to add logger in the end
 
 import express from 'express'
-import { createClient } from 'redis'
-import { apiResponse } from './utils/ApiResponse'
 import 'dotenv/config'
+import { apiResponse } from './utils/ApiResponse'
+import client from './redis.config'
 import cookieParser from 'cookie-parser'
 // no need to connect our db here, its already connected, so now just use it in any file you want
 import UserRouter from "./routes/user.router"
 import SuperAdminRouter from "./routes/super-admin.routes"
 import GroupRouter from "./routes/group.routes"
 
+await client.connect();
+
 const PORT= process.env.PORT || 3000
 const app= express()
-const client= createClient()
-
-client.on('error', err => console.log('Redis Client Error: ', err))
-await client.connect();
 
 add the field of 'updatedAt' also in each table, and see how it can be managed so that every time an update is done, 'updatedAt' field gets updated automatically (without needing to update it manually)
 
