@@ -67,7 +67,15 @@ export const googleRegisterCallback = async (code: any, redirectUri: string, rol
         return token;
 
     } catch (error: any) {
-        throw new apiError(500, error.name, error.message)
+        if (error instanceof apiError) {
+            throw error;
+        }
+
+        throw new apiError(
+            500,
+            error.name || "InternalServerError",
+            error.message || "An unexpected error occurred"
+        );
     }
 }
 
@@ -94,7 +102,15 @@ export const register = async (token: string, phone: string, college: string, de
 
         return data
     } catch (error: any) {
-        throw new apiError(500, error.name, error.message)
+        if (error instanceof apiError) {
+            throw error;
+        }
+
+        throw new apiError(
+            500,
+            error.name || "InternalServerError",
+            error.message || "An unexpected error occurred"
+        );
     }
 }
 
@@ -120,7 +136,15 @@ export const registerAdmin = async (token: string, phone: string, description: s
 
         return data
     } catch (error: any) {
-        throw new apiError(500, error.name, error.message)
+        if (error instanceof apiError) {
+            throw error;
+        }
+
+        throw new apiError(
+            500,
+            error.name || "InternalServerError",
+            error.message || "An unexpected error occurred"
+        );
     }
 }
 
@@ -191,7 +215,15 @@ export const googleLoginCallback = async (code: any, redirectUri: string, role: 
         return { accessToken, refreshToken, updatedData }
 
     } catch (error: any) {
-        throw new apiError(500, error.name, error.message)
+        if (error instanceof apiError) {
+            throw error;
+        }
+
+        throw new apiError(
+            500,
+            error.name || "InternalServerError",
+            error.message || "An unexpected error occurred"
+        );
     }
 }
 
@@ -240,6 +272,14 @@ export const logout = async (user: {
 
         return;
     } catch (error: any) {
-        throw new apiError(500, error.name, error.message)
+        if (error instanceof apiError) {
+            throw error;
+        }
+
+        throw new apiError(
+            500,
+            error.name || "InternalServerError",
+            error.message || "An unexpected error occurred"
+        );
     }
 }

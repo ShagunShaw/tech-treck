@@ -23,10 +23,17 @@ export const googleParticipantCallback = async (req: Request, res: Response) => 
         return res.cookie('googleTempData', token, { httpOnly: true, secure: true })
             .redirect('http://localhost:5500/registerPage2.html')
     } catch (error: any) {
-        const status = error.status ?? 500
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
         return res.status(status).json(
-            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+            new apiError(status, errName, errMessage)
+        );
     }
 }
 
@@ -44,10 +51,17 @@ export const partcipantRegister = async (req: Request, res: Response) => {
             .clearCookie('googleTempData')
             .json(new apiResponse(201, data, "Participant registered successfully"))
     } catch (error: any) {
-        const status = error.status ?? 500
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
         return res.status(status).json(
-            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+            new apiError(status, errName, errMessage)
+        );
     }
 }
 
@@ -69,10 +83,17 @@ export const googleAdminCallback = async (req: Request, res: Response) => {
         return res.cookie('googleTempData', token, { httpOnly: true, secure: true })
             .redirect('http://localhost:5500/adminRegisterPage2.html')
     } catch (error: any) {
-        const status = error.status ?? 500
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
         return res.status(status).json(
-            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+            new apiError(status, errName, errMessage)
+        );
     }
 }
 
@@ -91,10 +112,17 @@ export const adminRegister = async (req: Request, res: Response) => {
             .clearCookie('googleTempData')
             .json(new apiResponse(201, data, "Admin registered successfully"))
     } catch (error: any) {
-        const status = error.status ?? 500
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
         return res.status(status).json(
-            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+            new apiError(status, errName, errMessage)
+        );
     }
 }
 
@@ -121,10 +149,17 @@ export const googleParticipantLoginCallback = async (req: Request, res: Response
             .json(new apiResponse(200, updatedData, "User logged in successfully"))
 
     } catch (error: any) {
-        const status = error.status ?? 500
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
         return res.status(status).json(
-            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+            new apiError(status, errName, errMessage)
+        );
     }
 }
 
@@ -149,10 +184,17 @@ export const googleAdminLoginCallback = async (req: Request, res: Response) => {
             .json(new apiResponse(200, updatedData, "Admin logged in successfully"))
 
     } catch (error: any) {
-        const status = error.status ?? 500
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
         return res.status(status).json(
-            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+            new apiError(status, errName, errMessage)
+        );
     }
 }
 
@@ -177,10 +219,17 @@ export const googleSuperadminLoginCallback = async (req: Request, res: Response)
             .json(new apiResponse(200, updatedData, "Super-Admin logged in successfully"))
 
     } catch (error: any) {
-        const status = error.status ?? 500
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
         return res.status(status).json(
-            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+            new apiError(status, errName, errMessage)
+        );
     }
 }
 
@@ -195,9 +244,16 @@ export const logoutUser = async (req: any, res: Response) => {
                   .clearCookie('refreshToken')
                   .json(new apiResponse(200, [], "User logged out successfully"))
     } catch (error: any) {
-        const status = error.status ?? 500
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
         return res.status(status).json(
-            new apiError(status, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+            new apiError(status, errName, errMessage)
+        );
     }
 }

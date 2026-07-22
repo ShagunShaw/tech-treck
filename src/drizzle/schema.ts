@@ -45,7 +45,7 @@ export const Group = pgTable('group', {
     name: varchar({length: 50}).notNull(),
     status: groupStatusEnum().default('active'),
     points: smallint().default(20),     
-    timeTaken: numeric({ precision: 5, scale: 2 }),          // in minutes
+    timeTaken: numeric({ precision: 5, scale: 2 }).default('0.00'),          // in minutes
     createdAt: timestamp().defaultNow(),
     maxLevelReached: levelEnum().default('0'),
     themeAssigned: themeEnum().notNull()            
@@ -54,7 +54,7 @@ export const Group = pgTable('group', {
 // See the process of assigning genre to each member in notes.txt file
 export const GroupMember = pgTable('group_member', {
     id: serial().primaryKey(),
-    participantId: smallint().notNull().references(() => Participant.id, { onDelete: 'restrict' }),        // even admins can play can the game, but for that they had to first register, they cannot play directly from being the admin, but they can use the same email for register, the only main thing is to 'register'
+    participantId: smallint().notNull().unique().references(() => Participant.id, { onDelete: 'restrict' }),        // even admins can play can the game, but for that they had to first register, they cannot play directly from being the admin, but they can use the same email for register, the only main thing is to 'register'
     genre: genreEnum(),
     groupId: smallint().notNull().references(() => Group.id, { onDelete: 'cascade' })
 })

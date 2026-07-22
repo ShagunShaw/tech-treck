@@ -7,3 +7,5 @@ export const POINTS = {
         { pass: 10, hint: -12 }  // L4
     ]
 }
+
+export const THEMES = ['Theme 1', 'Theme 2', 'Theme 3', 'Theme 4', 'Theme 5', 'Theme 6']

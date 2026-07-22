@@ -18,7 +18,15 @@ export const getAdmins = async (status: 'approved' | 'pending') => {
 
         return admins;
     } catch (error: any) {
-        throw new apiError(500, error.name, error.message)
+        if (error instanceof apiError) {
+            throw error;
+        }
+
+        throw new apiError(
+            500,
+            error.name || "InternalServerError",
+            error.message || "An unexpected error occurred"
+        );
     }
 }
 
@@ -35,7 +43,15 @@ export const manageApprovalService = async (adminId: number, status: 'approved' 
 
         return data;        
     } catch (error: any) {
-        throw new apiError(500, error.name, error.message)
+        if (error instanceof apiError) {
+            throw error;
+        }
+
+        throw new apiError(
+            500,
+            error.name || "InternalServerError",
+            error.message || "An unexpected error occurred"
+        );
     }
 }
 
@@ -51,6 +67,14 @@ export const deleteAdminService = async (adminId: number) => {
 
         return data;
     } catch (error: any) {
-        throw new apiError(500, error.name, error.message)
+        if (error instanceof apiError) {
+            throw error;
+        }
+
+        throw new apiError(
+            500,
+            error.name || "InternalServerError",
+            error.message || "An unexpected error occurred"
+        );
     }
 }

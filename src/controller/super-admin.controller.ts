@@ -11,10 +11,17 @@ export const getPendingAdmins = async (req: Request, res: Response) => {
 
         return res.status(200).json(new apiResponse(200, data, "Pending Admins fetched successfully"))
     } catch (error: any) {
-        const staus = error.status ?? 500
-        return res.status(staus).json(
-            new apiError(staus, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
+        return res.status(status).json(
+            new apiError(status, errName, errMessage)
+        );
     }
 }
 
@@ -32,10 +39,17 @@ export const manageApproval = async (req: Request, res: Response) => {
 
         return res.status(200).json(new apiResponse(200, data, "Admin approved successfully"))
     } catch (error: any) {
-        const staus = error.status ?? 500
-        return res.status(staus).json(
-            new apiError(staus, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
+        return res.status(status).json(
+            new apiError(status, errName, errMessage)
+        );
     }
 }
 
@@ -45,10 +59,17 @@ export const getApprovedAdmins = async (req: Request, res: Response) => {
 
         return res.status(200).json(new apiResponse(200, data, "Approved Admins fetched successfully"))
     } catch (error: any) {
-        const staus = error.status ?? 500
-        return res.status(staus).json(
-            new apiError(staus, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
+        return res.status(status).json(
+            new apiError(status, errName, errMessage)
+        );
     }
 }
 
@@ -63,9 +84,16 @@ export const deleteAdmin = async (req: Request, res: Response) => {
 
         return res.status(200).json(new apiResponse(200, data, "Admin deleted successfully"))
     } catch (error: any) {
-        const staus = error.status ?? 500
-        return res.status(staus).json(
-            new apiError(staus, error.errName ?? error.name, error.errMessage ?? error.message)
-        )
+        if (error instanceof apiError) {
+            return res.status(error.status).json(error);
+        }
+
+        const status = error.status ?? 500;
+        const errName = error.errName ?? error.name ?? "InternalServerError";
+        const errMessage = error.errMessage ?? error.message ?? "An unexpected error occurred";
+
+        return res.status(status).json(
+            new apiError(status, errName, errMessage)
+        );
     }
 }

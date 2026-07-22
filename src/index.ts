@@ -18,6 +18,7 @@ const app= express()
 add the field of 'updatedAt' also in each table, and see how it can be managed so that every time an update is done, 'updatedAt' field gets updated automatically (without needing to update it manually)
 
 dont forget to add the super-admin record directly in our db, with status= 'approved'
+Also dont forget to add the row of 'GameConfig' table directly in our db
 
 app.use(cookieParser())
 app.use(express.json())

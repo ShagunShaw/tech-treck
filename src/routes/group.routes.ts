@@ -9,7 +9,10 @@ const router: Router= Router()
 router.post('/genre', verifyJWT, authorize('participant'), group.registerGenre)
 
 // create groups when game starts (to be handled in detail)
-router.post('/', verifyJWT, authorize('participant'), group.createGroup)
+router.post('/create', verifyJWT, authorize('participant'), group.createGroup)
+
+// join group by other members
+router.post('/join', verifyJWT, authorize('participant'), group.joinGroup)
 
 // abort the game
 router.patch('/:groupId/abort', verifyJWT, authorize('participant'), group.abort)
