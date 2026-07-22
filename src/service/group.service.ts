@@ -12,7 +12,7 @@ type GenreType = z.infer<typeof genreSchema>;
 
 export const registerGenre = async (genre: GenreType, userId: number) => {
     try {
-        const existing = await client.get(`genre:${userId}`)
+        const existing = await client.exists(`genre:${userId}`)
         if (existing) throw new apiError(400, "Already Registered", "You have already registered your genre")
 
         await client.set(`genre:${userId}`, genre)
